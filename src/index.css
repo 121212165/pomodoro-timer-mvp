@@ -1,0 +1,52 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+:root {
+  --color-surface: oklch(98% 0 0);
+  --color-surface-alt: oklch(95% 0 0);
+  --color-text: oklch(18% 0 0);
+  --color-text-muted: oklch(50% 0 0);
+  --color-primary: oklch(55% 0.22 25);
+  --color-primary-light: oklch(65% 0.18 25);
+  --color-ring-track: oklch(90% 0 0);
+  --color-focus: oklch(55% 0.22 25);
+  --color-break: oklch(60% 0.18 155);
+  --color-border: oklch(88% 0 0);
+}
+
+[data-theme="dark"] {
+  --color-surface: oklch(15% 0 0);
+  --color-surface-alt: oklch(20% 0 0);
+  --color-text: oklch(95% 0 0);
+  --color-text-muted: oklch(65% 0 0);
+  --color-primary: oklch(65% 0.22 25);
+  --color-primary-light: oklch(72% 0.18 25);
+  --color-ring-track: oklch(25% 0 0);
+  --color-focus: oklch(65% 0.22 25);
+  --color-break: oklch(68% 0.18 155);
+  --color-border: oklch(30% 0 0);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  min-height: 100dvh;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+@keyframes pulse-ring {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+.animate-pulse-ring {
+  animation: pulse-ring 1.5s ease-in-out infinite;
+}
