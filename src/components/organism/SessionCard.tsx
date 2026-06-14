@@ -24,6 +24,11 @@ export default function SessionCard({ session }: SessionCardProps) {
             {mins} 分钟
           </span>
         </div>
+        {session.task && (
+          <p className="text-xs truncate" style={{ color: 'var(--color-text)' }}>
+            {session.task}
+          </p>
+        )}
         <p className="text-xs" style={{ color: 'var(--color-text-muted)' }}>
           {formatDate(session.startedAt)}
         </p>

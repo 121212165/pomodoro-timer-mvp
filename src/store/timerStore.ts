@@ -10,8 +10,10 @@ interface TimerState {
   currentRound: number
   sessions: SessionRecord[]
   lastActiveStart: number | null
+  currentTask: string
 
   // actions
+  setTask: (task: string) => void
   start: (duration: number) => void
   pause: () => void
   resume: () => void
@@ -33,6 +35,9 @@ export const useTimerStore = create<TimerState>()(
       currentRound: 1,
       sessions: [],
       lastActiveStart: null,
+      currentTask: '',
+
+      setTask: (task) => set({ currentTask: task }),
 
       start: (duration) =>
         set({
@@ -56,6 +61,7 @@ export const useTimerStore = create<TimerState>()(
           actualDuration: state.phase === 'focus' ? 25 * 60 : 5 * 60,
           completed: true,
           interrupted: false,
+          task: state.currentTask || undefined,
         }
         const isFocus = state.phase === 'focus'
         const newCompleted = isFocus ? state.completedPomodoros + 1 : state.completedPomodoros
@@ -95,6 +101,7 @@ export const useTimerStore = create<TimerState>()(
             actualDuration: 0,
             completed: false,
             interrupted: true,
+            task: state.currentTask || undefined,
           }
           set({ sessions: [session, ...state.sessions] })
         }
@@ -121,6 +128,7 @@ export const useTimerStore = create<TimerState>()(
         currentRound: state.currentRound,
         sessions: state.sessions.slice(0, 100),
         phase: state.phase,
+        currentTask: state.currentTask,
       }),
     }
   )

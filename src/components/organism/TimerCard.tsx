@@ -18,7 +18,7 @@ function getDuration(phase: TimerPhase, prefs: ReturnType<typeof usePreferenceSt
 }
 
 export default function TimerCard() {
-  const { status, phase, secondsLeft, completedPomodoros, currentRound, start, pause, resume, complete, reset, tick, skip } = useTimerStore()
+  const { status, phase, secondsLeft, completedPomodoros, currentRound, currentTask, setTask, start, pause, resume, complete, reset, tick, skip } = useTimerStore()
   const prefs = usePreferenceStore()
   const workerRef = useRef<Worker | null>(null)
   const duration = getDuration(phase, prefs)
@@ -79,6 +79,20 @@ export default function TimerCard() {
       style={{ backgroundColor: 'var(--color-surface-alt)', border: '1px solid var(--color-border)' }}
     >
       <SessionLabel phase={phase} currentRound={currentRound} totalRounds={prefs.longBreakInterval} />
+
+      <input
+        type="text"
+        placeholder="正在做什么..."
+        value={currentTask}
+        onChange={(e) => setTask(e.target.value)}
+        disabled={status === 'running'}
+        className="w-full text-center text-sm px-3 py-2 rounded-lg outline-none transition-opacity disabled:opacity-50"
+        style={{
+          backgroundColor: 'var(--color-surface)',
+          border: '1px solid var(--color-border)',
+          color: 'var(--color-text)',
+        }}
+      />
 
       <div className="relative flex items-center justify-center">
         <ProgressRing progress={progress} color={getPhaseColor(phase)} size={260} strokeWidth={10} />

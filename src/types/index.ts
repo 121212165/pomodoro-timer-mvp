@@ -10,6 +10,7 @@ export interface SessionRecord {
   actualDuration: number
   completed: boolean
   interrupted: boolean
+  task?: string
 }
 
 export interface UserPreferences {
