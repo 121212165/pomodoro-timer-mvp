@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pomodoro Timer</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; background: #1a1a2e; color: #eee; }
+  .container { text-align: center; }
+  #phase { font-size: 1.2rem; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.2em; }
+  #time { font-size: 6rem; font-variant-numeric: tabular-nums; font-weight: 300; }
+  .controls { margin-top: 1.5rem; display: flex; gap: 1rem; justify-content: center; }
+  button { padding: 0.7rem 1.8rem; font-size: 1rem; border: 1px solid #444; border-radius: 6px; background: #16213e; color: #eee; cursor: pointer; transition: background 0.2s; }
+  button:hover { background: #0f3460; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div id="phase">Work</div>
+  <div id="time">25:00</div>
+  <div class="controls">
+    <button id="startBtn">Start</button>
+    <button id="resetBtn">Reset</button>
+  </div>
+</div>
+<script>
+const WORK = 25 * 60, BREAK = 5 * 60;
+let remaining, isWork, running, interval;
+
+function load() {
+  const s = localStorage.getItem('pomodoro');
+  if (s) { const d = JSON.parse(s); remaining = d.r; isWork = d.w; } else { remaining = WORK; isWork = true; }
+  running = false;
+}
+
+function save() { localStorage.setItem('pomodoro', JSON.stringify({ r: remaining, w: isWork })); }
+
+function render() {
+  const m = String(Math.floor(remaining / 60)).padStart(2, '0');
+  const s = String(remaining % 60).padStart(2, '0');
+  document.getElementById('time').textContent = m + ':' + s;
+  document.getElementById('phase').textContent = isWork ? 'Work' : 'Break';
+  document.getElementById('startBtn').textContent = running ? 'Pause' : 'Start';
+}
+
+function beep() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  osc.type = 'sine'; osc.frequency.value = 800;
+  osc.connect(ctx.destination); osc.start(); osc.stop(ctx.currentTime + 0.5);
+}
+
+function tick() {
+  if (remaining <= 0) { beep(); isWork = !isWork; remaining = isWork ? WORK : BREAK; }
+  remaining--;
+  save(); render();
+}
+
+function toggle() {
+  if (running) { clearInterval(interval); running = false; }
+  else { interval = setInterval(tick, 1000); running = true; }
+  render();
+}
+
+function reset() { clearInterval(interval); remaining = WORK; isWork = true; running = false; save(); render(); }
+
+document.getElementById('startBtn').addEventListener('click', toggle);
+document.getElementById('resetBtn').addEventListener('click', reset);
+load(); render();
+</script>
+</body>
+</html>
